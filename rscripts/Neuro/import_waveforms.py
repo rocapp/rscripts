@@ -5,16 +5,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import sys
+import json
 
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
-
-def import_waveform(filename, nr_trace, toplot=False, 
-                        savetxt=False, topickle=False, outname='waveform.txt'):
+def import_waveform(filename, nr_trace=None, toplot=False, 
+                        savetxt=False, tojson=False, 
+                        outname='waveform.txt', dtype=np.float32):
     def iter_loadtxt(filename, delimiter='\t', 
-                    skiprows=6, dtype=np.float32):
+                    skiprows=6, dtype=dtype):
         def iter_func():
             with open(filename, 'r') as infile:
                 for _ in range(skiprows):
@@ -28,15 +25,15 @@ def import_waveform(filename, nr_trace, toplot=False,
         data = data.reshape((-1, iter_loadtxt.rowlength))
         return data
     wv = iter_loadtxt(filename, delimiter='\t', skiprows=6)
+    if nr_trace is None: nr_trace = range(0, wv.shape[1])
     if toplot is True:
         plt.plot(wv[:, nr_trace])
         plt.show()
     if savetxt is True:
         np.savetxt(outname, wv[:, nr_trace])
-    if topickle is True:
+    if tojson is True:
         with open(outname, 'wb') as off:
-            pickle.dump(wv[:, nr_trace], off, protocol=-1)
-            # selects most efficient protocol available
+            json.dump(wv[:, nr_trace], off)
     return wv[:, nr_trace]
 
 def load_waveform(filename, trace):
@@ -56,7 +53,7 @@ def load_waveform(filename, trace):
         return data
     return iter_loadtxt(filename)[:, trace]
 
-def iter_loadtxt(filename, delimiter='\t', skiprows=6, dtype=float):
+def iter_loadtxt(filename, delimiter='\t', skiprows=6, dtype=np.float64):
     # http://stackoverflow.com/questions/8956832/python-out-of-memory-on-large-csv-file-numpy
     def iter_func():
         with open(filename, 'r') as infile:

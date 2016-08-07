@@ -5,7 +5,7 @@ import os
 
 
 setup(name='rscripts',
-      version='0.1a1',
+      version='0.1a2',
       description='quick scripts for many different uses',
       author='Robbie Capps',
       author_email='rocapp@gmail.com',
