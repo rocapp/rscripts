@@ -5,10 +5,12 @@ import os
 
 
 setup(name='rscripts',
-      version='0.023',
+      version='0.1a1',
       description='quick scripts for many different uses',
       author='Robbie Capps',
       author_email='rocapp@gmail.com',
-      url='https://robcapps.com',
-      packages=map(lambda path: os.path.join('src', path), find_packages(where='src'))
+      url='https://github.com/rocapp/rscripts',
+      package_dir={'rscripts': 'rscripts'},
+      packages=find_packages(),
+      install_requires=['matplotlib','numpy']
      )
