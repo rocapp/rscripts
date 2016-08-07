@@ -5,11 +5,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import sys
-import json
+import json, codecs
 
-def import_waveform(filename, nr_trace=None, toplot=False, 
-                        savetxt=False, tojson=False, 
-                        outname='waveform.txt', dtype=np.float32):
+def import_waveform(filename, nr_trace=None, 
+                    toplot=False, savetxt=False, tojson=False, 
+                    outname='waveform.txt', dtype=np.float32):
     def iter_loadtxt(filename, delimiter='\t', 
                     skiprows=6, dtype=dtype):
         def iter_func():
@@ -32,8 +32,10 @@ def import_waveform(filename, nr_trace=None, toplot=False,
     if savetxt is True:
         np.savetxt(outname, wv[:, nr_trace])
     if tojson is True:
-        with open(outname, 'wb') as off:
-            json.dump(wv[:, nr_trace], off)
+        # http://stackoverflow.com/questions/26646362/numpy-array-is-not-json-serializable
+        json.dump(wv[:, nr_trace].tolist(),
+              codecs.open(outname, 'w', encoding='utf-8', separators=(',', ':'), 
+                        sort_keys=True, indent=4))
     return wv[:, nr_trace]
 
 def load_waveform(filename, trace):
