@@ -9,7 +9,7 @@ import json, codecs
 
 def import_waveform(filename, nr_trace=None, 
                     toplot=False, savetxt=False, tojson=False, 
-                    outname='waveform.txt', dtype=np.float32):
+                    tonpy=False, outname='waveform.txt', dtype=np.float32):
     def iter_loadtxt(filename, delimiter='\t', 
                     skiprows=6, dtype=dtype):
         def iter_func():
@@ -36,6 +36,8 @@ def import_waveform(filename, nr_trace=None,
         json.dump(wv[:, nr_trace].tolist(),
               codecs.open(outname, 'w', encoding='utf-8', separators=(',', ':'), 
                         sort_keys=True, indent=4))
+    if tonpy is True:
+        np.save(outname, wv[:, nr_trace])
     return wv[:, nr_trace]
 
 def load_waveform(filename, trace):
